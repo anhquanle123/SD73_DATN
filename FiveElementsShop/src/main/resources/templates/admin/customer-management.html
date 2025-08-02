@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout.html}">
+<head>
+    <title>Quản lý khách hàng</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+        .icon-btn {
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .icon-btn i {
+            pointer-events: none;
+        }
+
+        .gap-2 > * {
+            margin-right: 8px;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-add {
+            font-weight: 500;
+            background-color: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="content p-4">
+    <h2>Quản lý khách hàng</h2>
+
+    <br>
+
+    <!-- Thanh top chứa nút thêm và tìm kiếm -->
+    <div class="top-bar mb-3 d-flex justify-content-between">
+        <div></div> <!-- Giữ khoảng trống bên trái -->
+        <a href="/admin-only/customer-management/add" class="btn btn-success btn-lg d-flex align-items-center" style="padding: 8px 16px; font-size: 1.1rem;">
+            <i class="fas fa-plus-circle me-2"></i> Thêm khách hàng
+        </a>
+    </div>
+
+
+    <table id="customerTable" class="table table-striped">
+        <thead>
+        <tr>
+            <th>Mã khách hàng</th>
+            <th>Tên khách hàng</th>
+            <th>Số điện thoại</th>
+            <th>Email</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${customers.content}">
+            <td th:text="${customer.code} ?: 'N/A'"></td>
+            <td th:text="${customer.name} ?: 'N/A'"></td>
+            <td th:text="${customer.phoneNumber} ?: 'N/A'"></td>
+            <td th:text="${customer.email} ?: 'N/A'"></td>
+            <td class="gap-2 d-flex">
+                <a th:href="@{/admin-only/customer-management/delete/{id}(id=${customer.id})}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')">Xóa</a>
+                <!-- Chi tiết -->
+                <a th:href="@{'/admin-only/customer-management/detail/' + ${customer.id}}" class="text-primary icon-btn" title="Chi tiết">
+                    <i class="fas fa-users-cog fa-lg"></i>
+                </a>
+                <!-- Sửa -->
+                <a th:href="@{'/admin-only/customer-management/edit/' + ${customer.id}}" class="text-warning icon-btn" title="Sửa">
+                    <i class="fas fa-edit fa-lg"></i>
+                </a>
+            </td>
+        </tr>
+        <tr th:if="${customers.content.size() == 0}">
+            <td colspan="5" class="text-center text-danger">Không tìm thấy khách hàng nào phù hợp.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- DataTables script -->
+<th:block layout:fragment="scripts">
+    <script>
+        $(document).ready(function () {
+            $('#customerTable').DataTable({
+                language: {
+                    search: "Tìm kiếm:",
+                    lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+                    zeroRecords: "Không tìm thấy kết quả phù hợp",
+                    info: "Hiển thị _PAGE_ / _PAGES_",
+                    paginate: {
+                        first: "<<",
+                        last: ">>",
+                        next: ">",
+                        previous: "<"
+                    }
+                }
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

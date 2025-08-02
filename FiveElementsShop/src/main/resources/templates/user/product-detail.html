@@ -1,0 +1,656 @@
+<!--Chi tiết sản phẩm -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{user/layout-user.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="icon" type="image/png" th:href="@{/images/icons/favicon.png}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/iconic/css/material-design-iconic-font.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/linearicons-v1.0.0/icon-font.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/animate/animate.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/css-hamburgers/hamburgers.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/animsition/css/animsition.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/daterangepicker/daterangepicker.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/slick/slick.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/MagnificPopup/magnific-popup.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/perfect-scrollbar/perfect-scrollbar.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/util.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+
+
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 99999">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Yêu cầu đăng nhập</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Vui lòng đăng nhập để tiếp tục sử dụng chức năng này.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <a href="/user-login" class="btn btn-primary">Đăng nhập</a> <!-- Update the URL to your login page -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail -->
+    <section class="sec-product-detail bg0 p-t-65 p-b-60">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-lg-7 p-b-30">
+                    <div class="p-l-25 p-r-30 p-lr-0-lg">
+                        <div class="wrap-slick3 flex-sb flex-w">
+                            <div class="wrap-slick3-dots"></div>
+                            <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+
+                            <div class="slick3 gallery-lb">
+                                <th:block th:each="image : ${product.image}">
+                                    <div class="item-slick3" th:data-thumb="'/' + ${image.link}">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img th:src="@{'/' + ${image.link}}" alt="IMG-PRODUCT" />
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                               th:href="@{'/' + ${image.link}}">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-5 p-b-30">
+                    <div class="p-r-50 p-t-5 p-lr-0-lg">
+                        <h4 class="mtext-105 cl2 js-name-detail p-b-14" th:text="${product.name}">
+                        </h4>
+
+                        <span class="mtext-106 cl2" id="price_product" th:text="${#numbers.formatDecimal(product.productDetails[0].price, 0, 'POINT', 0, 'COMMA') + ' đ'}">
+
+						</span>
+						</span>
+
+                        <p class="stext-102 cl3 p-t-23" th:text="${product.describe}">
+                            Một kết hợp từ sự thoải mái cùng độ ấm áp trong thiết kế cổ lọ.
+                        </p>
+
+                        <p class="stext-102 cl3 p-t-23">
+                            <span ><i class="fa fa-copyright"></i></span>&nbsp;Nhãn hiệu: <span class="font-weight-bold" th:text="${product.brand.name}"></span> <br>
+
+                            <span><i class="fa fa-puzzle-piece"></i></span>&nbsp;Chất liệu: <span class="font-weight-bold" th:text="${product.material.name}"></span> <br>
+
+                            <span><i class="fa fa-cubes"></i></span>&nbsp;Loại: <span class="font-weight-bold" th:text="${product.category.name}"></span> <br>
+<!--                            Với cách phối màu khác kết hợp với đường viền ở tay và cổ áo đã làm thiết kế trở nên nổi bật và trẻ trung hơn. Chi tiết túi được may bên trong áo đã thể hiện được sự tinh tế của thiết kế khi vừa giữ được tính thẩm mỹ cho trang phục-->
+                        </p>
+
+                        <!--  -->
+                        <div class="p-t-33">
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-203 respon6">
+                                    Kích cỡ
+                                </div>
+                                <div class="size-204 respon6-next">
+                                    <div class="rs1-select2 bor8 bg0">
+                                        <select class="js-select2" name="size" id="sizeSelect">
+<!--                                            <option th:value="0">Choose a size</option>-->
+<!--                                            <th:block th:each="size : ${listSizes}">-->
+<!--                                                <option th:value="${size.id}" th:text="${size.name}"></option>-->
+<!--                                            </th:block>-->
+                                        </select>
+                                        <div class="dropDownSelect2"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-203 respon6">
+                                    Màu
+                                </div>
+
+                                <div class="size-204 respon6-next">
+                                    <div class="rs1-select2 bor8 bg0">
+                                        <select class="js-select2" name="time" id="colorSelect">
+<!--                                            <option th:value="0">Choose a color</option>-->
+<!--                                            <th:block th:each="color : ${listColors}">-->
+<!--                                                <option th:value="${color.id}" th:text="${color.name}"></option>-->
+<!--                                            </th:block>-->
+                                        </select>
+                                        <div class="dropDownSelect2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="productDetailId", id="productDetailId">
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-204 flex-w flex-m respon6-next">
+                                    <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                        <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                            <i class="fs-16 zmdi zmdi-minus"></i>
+                                        </div>
+
+                                        <input class="mtext-104 cl3 txt-center num-product" type="number"
+                                               name="num-product" value="1">
+
+                                        <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                            <i class="fs-16 zmdi zmdi-plus"></i>
+                                        </div>
+                                    </div>
+                                    <span class="remaning-product" style="font-size: 12px"></span>
+                                    <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                        Thêm vào giỏ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--  -->
+                        <div class="flex-w flex-m p-l-100 p-t-40 respon7">
+                            <div class="flex-m bor9 p-r-10 m-r-11">
+                                <a href="#"
+                                   class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
+                                   data-tooltip="Add to Wishlist">
+                                    <i class="zmdi zmdi-favorite"></i>
+                                </a>
+                            </div>
+
+                            <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                               data-tooltip="Facebook">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+
+                            <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                               data-tooltip="Twitter">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+
+                            <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                               data-tooltip="Google Plus">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- Back to top -->
+    <div class="btn-back-to-top" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up"></i>
+		</span>
+    </div>
+
+    <!-- Modal1 -->
+    <div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+        <div class="overlay-modal1 js-hide-modal1"></div>
+
+        <div class="container">
+            <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+                <button class="how-pos3 hov3 trans-04 js-hide-modal1">
+                    <img src="images/icons/icon-close.png" alt="CLOSE">
+                </button>
+
+                <div class="row">
+                    <div class="col-md-6 col-lg-7 p-b-30">
+                        <div class="p-l-25 p-r-30 p-lr-0-lg">
+                            <div class="wrap-slick3 flex-sb flex-w">
+                                <div class="wrap-slick3-dots"></div>
+                                <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+
+                                <div class="slick3 gallery-lb">
+                                    <div class="item-slick3" data-thumb="images/product-detail-01.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img src="images/product-detail-01.jpg" alt="IMG-PRODUCT">
+
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                               href="images/product-detail-01.jpg">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="item-slick3" data-thumb="images/product-detail-02.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img src="images/product-detail-02.jpg" alt="IMG-PRODUCT">
+
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                               href="images/product-detail-02.jpg">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="item-slick3" data-thumb="images/product-detail-03.jpg">
+                                        <div class="wrap-pic-w pos-relative">
+                                            <img src="images/product-detail-03.jpg" alt="IMG-PRODUCT">
+
+                                            <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                               href="images/product-detail-03.jpg">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-5 p-b-30">
+                        <div class="p-r-50 p-t-5 p-lr-0-lg">
+                            <h4 class="mtext-105 cl2 js-name-detail p-b-14">
+                                Lightweight Jacket
+                            </h4>
+
+                            <span class="mtext-106 cl2">
+								$58.79
+							</span>
+
+                            <p class="stext-102 cl3 p-t-23">
+                                Với cách phối màu khác kết hợp với đường viền ở tay và cổ áo đã làm thiết kế trở nên nổi bật và trẻ trung hơn. Chi tiết túi được may bên trong áo đã thể hiện được sự tinh tế của thiết kế khi vừa giữ được tính thẩm mỹ cho trang phục
+                            </p>
+
+                            <!--  -->
+                            <div class="p-t-33">
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-203 flex-c-m respon6">
+                                        Size
+                                    </div>
+
+                                    <div class="size-204 respon6-next">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="time">
+                                                <option>Chọn cỡ</option>
+                                                <option>Size 34</option>
+                                                <option>Size 35</option>
+                                                <option>Size 36</option>
+                                                <option>Size 37</option>
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-203 flex-c-m respon6">
+                                        Color
+                                    </div>
+
+                                    <div class="size-204 respon6-next">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="time">
+                                                <option>Chọn màu</option>
+                                                <option>Red</option>
+                                                <option>Blue</option>
+                                                <option>White</option>
+                                                <option>Grey</option>
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-204 flex-w flex-m respon6-next">
+                                        <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-minus"></i>
+                                            </div>
+
+                                            <input class="mtext-104 cl3 txt-center num-product" type="number"
+                                                   name="num-product" value="1">
+
+                                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-plus"></i>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                                class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                            Add to cart
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--  -->
+                            <div class="flex-w flex-m p-l-100 p-t-40 respon7">
+                                <div class="flex-m bor9 p-r-10 m-r-11">
+                                    <a href="#"
+                                       class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
+                                       data-tooltip="Add to Wishlist">
+                                        <i class="zmdi zmdi-favorite"></i>
+                                    </a>
+                                </div>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                   data-tooltip="Facebook">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                   data-tooltip="Twitter">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                   data-tooltip="Google Plus">
+                                    <i class="fa fa-google-plus"></i>
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" th:inline="javascript"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var productId = /*[[${product.id}]]*/ 'default-value';
+        var productCode = /*[[${product.code}]]*/ 'default-value';
+        /*]]>*/
+        var isUserLoggedIn = /*[[${#authorization.expression('isAuthenticated()')}]]*/ 'abc';
+            $.ajax({
+                type: 'GET',
+                dataType: "json",
+                url: "/colors/" + productId + "/" + "product",
+                success: function (data) {
+                    loadColorSelect(data)
+                }
+            })
+
+        $.ajax({
+            type: 'GET',
+            dataType: "json",
+            url: "/sizes/" + productId + "/" + "product",
+            success: function (data) {
+                loadSizeSelect(data)
+            },
+        })
+
+
+        async function handleColorChange(colorId) {
+            if ($("#colorSelect").val() == "") {
+                enableAllColorOptions()
+                $("#colorSelect").select2()
+                return
+            }
+            else if ($("#sizeSelect").val() !== "") {
+                 loadPrice()
+            }
+        }
+
+        $(document).ready(function () {
+            $("#sizeSelect").on('change', function (e) {
+                var sizeId = $(this).val()
+                handleSizeChange(sizeId)
+            })
+
+            $("#colorSelect").on('change', function (e) {
+                var colorId = $(this).val()
+                handleColorChange(colorId)
+            })
+
+
+            $(".js-addcart-detail").on('click', function (e) {
+                if(!isUserLoggedIn) {
+                    $('#loginModal').modal('show');
+                    localStorage.setItem("redirect", `/product-detail/${productCode}`)
+                }else {
+                    addToCart()
+                }
+
+            })
+
+        })
+
+        var initiallyAvailableColors = [];
+        var availableColors = [];
+        async function handleSizeChange(sizeId) {
+            if ($("#sizeSelect").val() == "") {
+                enableAllColorOptions()
+                $("#colorSelect").select2()
+                return
+            }
+            else if ($("#colorSelect").val() !== "") {
+                loadPrice()
+            }
+            $('#loading-overlay').show();
+            await $.ajax({
+                type: 'GET',
+                dataType: "json",
+                url: `/colors/${productId}/product/${sizeId}/size`,
+                success: function (data) {
+                    // Enable all color options first
+                    enableAllColorOptions();
+                    // Update initially available colors with the current available colors
+                    availableColors = data.map(function (color) {
+                        return color.id;
+                    });
+                    // Disable color options that were initially available but are not anymore
+                    for (var i = 0; i < initiallyAvailableColors.length; i++) {
+                        if (!availableColors.includes(initiallyAvailableColors[i])) {
+                            disableColorOption(initiallyAvailableColors[i]);
+                        }
+                    }
+
+                    $('#colorSelect').select2();
+                }
+            });
+            $('#loading-overlay').hide()
+        }
+
+        function formatNumber(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function enableAllColorOptions() {
+            // Enable all color options
+            $("#colorSelect option").removeAttr("disabled");
+        }
+
+        function disableColorOption(colorId) {
+            // Disable a specific color option by its value
+
+            $("#colorSelect option[value='" + colorId + "']").attr("disabled", "disabled");
+        }
+
+        function loadColorSelect(data) {
+            var selectElement = document.getElementById("colorSelect");
+
+            selectElement.innerHTML = '';
+
+            var defaultOption = document.createElement("option");
+            defaultOption.text = "Chọn màu";
+            defaultOption.value = "";
+            selectElement.appendChild(defaultOption);
+
+            for (var i = 0; i < data.length; i++) {
+                var option = document.createElement("option");
+                option.text = data[i].name;
+                option.value = data[i].id;
+                selectElement.appendChild(option);
+            }
+            // Initialize initiallyAvailableColors with the currently available colors
+            initiallyAvailableColors = data.map(function(color) {
+                return color.id;
+            });
+            availableColors = initiallyAvailableColors
+
+        }
+
+        function loadSizeSelect(data) {
+            var selectElement = document.getElementById("sizeSelect");
+
+            selectElement.innerHTML = '';
+
+            var defaultOption = document.createElement("option");
+            defaultOption.text = "Chọn cỡ";
+            defaultOption.value = ""
+            selectElement.appendChild(defaultOption);
+
+            for (var i = 0; i < data.length; i++) {
+                var option = document.createElement("option");
+                option.text = data[i].name;
+                option.value = data[i].id;
+                selectElement.appendChild(option);
+            }
+        }
+
+        async function loadPrice() {
+            await $.ajax({
+                type: 'GET',
+                dataType: "json",
+                url: `/productDetails/${productId}/product`,
+                success: function (data) {
+                    const productDetail = data.find(item => item.size.id == $("#sizeSelect").val() && item.color.id == $("#colorSelect").val());
+                    loadRemainingQuantity(productDetail.quantity)
+                    if(!productDetail.discountedPrice) {
+                        $("#price_product").text(formatNumber(parseFloat(productDetail.price)) + ' đ')
+                    }
+                    else {
+                        const oldPrice = formatNumber(parseFloat(productDetail.price))
+                        const discountedPrice = formatNumber(parseFloat(productDetail.discountedPrice))
+                        $("#price_product").html(`
+                        <span style="font-size: 12px; text-decoration: line-through">${oldPrice} đ</span>
+                        <span class="mtext-106 cl2" id="price_product">${discountedPrice} đ</span>
+                        `)
+                    }
+                    $("#productDetailId").val(productDetail.id)
+                }
+            })
+        }
+
+        function loadRemainingQuantity(value) {
+            if(value == 0) {
+                $('.js-name-detail').append('<span style="color:red; border: 1px solid #ddd; font-size: 12px; margin-left: 8px">Hết hàng</span>')
+            }
+            $(".remaning-product").html(`Còn lại <span id="remaining-quantity" data-quantity="${value}">${value}</span> sản phẩm`)
+        }
+
+        $('.num-product').on('keypress', function (e) {
+            onlyAllowNumberInput(e)
+        })
+
+        $('.num-product').on('focusout', function (e) {
+            if($(this).val() == "") {
+                $(this).val(1)
+            }
+        })
+
+        function onlyAllowNumberInput(e) {
+            const key = e.key;
+            if (key === '-' || key == 0) {
+                e.preventDefault();
+            }
+        }
+
+
+        async function addToCart() {
+            var remainingQuantity = parseInt($("#remaining-quantity").attr('data-quantity'))
+            var quantity = parseInt($('.num-product').val())
+            if (!checkColorAndSizeSelect()) {
+                return;
+            }
+
+            if (remainingQuantity == 0) {
+                swal("Lỗi", "Sản phẩm có thuộc tính này đã hết hàng", "error");
+                return;
+            }
+
+            if (quantity > remainingQuantity) {
+                swal("Lỗi", "Số lượng thêm vào giỏ hàng lớn hơn số lượng còn", "error");
+                return;
+            }
+
+
+            var currentTotalQuantityInCart = parseInt($(".js-show-cart").attr("data-notify"));
+
+            var nameProduct = $('.js-name-detail').text();
+            var dataSend = {
+                detail: {
+                    id: $("#productDetailId").val()
+                },
+                quantity: quantity
+            }
+
+            $('#loading-overlay').show();
+            await $.ajax({
+                type: 'POST',
+                url: '/api/addToCart',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(dataSend),
+                success: function (data) {
+                    $('#loading-overlay').hide();
+                    swal(nameProduct, "Thêm vào giỏ hàng thành công", "success")
+
+                    if(isUserLoggedIn) {
+                        $.ajax({
+                            type: 'GET',
+                            url:`http://localhost:8080/api/getAllCart`,
+                            dataType: 'json',
+                            success: function (data) {
+                                $(".js-show-cart").attr("data-notify", data.length)
+                                localStorage.setItem("cartQuantity", (data.length).toString())
+                            }
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#loading-overlay').hide();
+                    swal("Error", xhr.responseJSON.message, "error")
+                    row.find(".num-product").val(1)
+
+                }
+            })
+
+
+        }
+
+        function checkColorAndSizeSelect() {
+            if ($("#colorSelect").val() == "" || $("#sizeSelect").val() == "") {
+                swal("Error", "Vui lòng chọn màu sắc và kích thước trước khi thêm vào giỏ", "error")
+                return false
+            }
+            return true
+        }
+
+    </script>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout.html}">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý nhãn hàng</title>
+
+  <!-- CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    .action-btns a {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .action-btns i {
+      transition: transform 0.2s ease;
+    }
+
+    .action-btns a:hover i {
+      transform: scale(1.2);
+    }
+
+    #search-input {
+      max-width: 300px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+  <h4>Quản lý nhãn hàng</h4>
+  <a href="/admin/brand-create" class="btn btn-success my-3 float-right">
+    <i class="fa fa-plus-square"></i> <span>Thêm nhãn hàng</span>
+  </a>
+
+  <!-- Ô tìm kiếm -->
+  <div class="form-group">
+    <input type="text" id="search-input" class="form-control" placeholder="Tìm theo mã hoặc tên nhãn hàng...">
+  </div>
+
+  <!-- THÔNG BÁO SWEETALERT -->
+  <div id="success-message" th:if="${successMessage}" th:data-message="${successMessage}" style="display: none;"></div>
+
+  <table class="table my-3">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Mã nhãn hàng
+        <a th:href="@{/admin/brand-all(page=0, sort='id,asc')}" class="sort-link">↑</a>
+        <a th:href="@{/admin/brand-all(page=0, sort='id,desc')}" class="sort-link">↓</a>
+      </th>
+      <th scope="col">Tên nhãn hàng</th>
+      <th scope="col">Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="items : ${items}" th:id="'row-' + ${items.id}">
+      <th scope="row" th:text="${items.id}">1</th>
+      <td th:text="${items.code}">Mã</td>
+      <td th:text="${items.name}">Tên</td>
+      <td class="action-btns">
+        <!-- Sửa -->
+        <a th:href="@{'/admin/brand-detail/' + ${items.id}}" class="text-info" title="Sửa">
+          <i>🖊️</i>
+        </a>
+        <!-- Xóa -->
+        <a href="#" class="delete-btn text-danger" th:attr="data-id=${items.id}" title="Xóa">
+          <i class="fa fa-trash"></i>
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- PHÂN TRANG -->
+  <div class="clearfix float-right">
+    <ul class="pagination">
+      <li th:classappend="${items.hasPrevious()} ? '' : 'disabled'" class="page-item">
+        <a th:href="@{/admin/brand-all(page=0, sort=${sortField + ',' + (sortDirection == 'asc' ? 'desc' : 'asc')})}"
+           class="page-link">
+          <i class="fas fa-angle-double-left"></i>
+        </a>
+      </li>
+      <li th:classappend="${items.hasPrevious()} ? '' : 'disabled'" class="page-item">
+        <a th:href="@{/admin/brand-all(page=${items.number - 1}, sort=${sortField + ',' + (sortDirection == 'asc' ? 'desc' : 'asc')})}"
+           class="page-link">
+          <i class="fas fa-angle-left"></i>
+        </a>
+      </li>
+      <li th:classappend="${items.hasNext()} ? '' : 'disabled'" class="page-item">
+        <a th:href="@{/admin/brand-all(page=${items.number + 1}, sort=${sortField + ',' + (sortDirection == 'asc' ? 'desc' : 'asc')})}"
+           class="page-link">
+          <i class="fas fa-angle-right"></i>
+        </a>
+      </li>
+      <li th:classappend="${items.hasNext()} ? '' : 'disabled'" class="page-item">
+        <a th:href="@{/admin/brand-all(page=${items.totalPages - 1}, sort=${sortField + ',' + (sortDirection == 'asc' ? 'desc' : 'asc')})}"
+           class="page-link">
+          <i class="fas fa-angle-double-right"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    $(document).ready(function () {
+      // Ẩn các dòng đã xóa dựa trên localStorage
+      let deletedIds = JSON.parse(localStorage.getItem('deletedBrands')) || [];
+      deletedIds.forEach(id => {
+        $('#row-' + id).remove();
+      });
+
+      // Xử lý xóa
+      $('.delete-btn').on('click', function (e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        Swal.fire({
+          title: "Xác nhận?",
+          text: "Bạn chắc chắn muốn xóa nhãn hàng này khỏi bảng ?",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: 'Hủy',
+          confirmButtonText: 'Xác nhận',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            if (!deletedIds.includes(id)) {
+              deletedIds.push(id);
+              localStorage.setItem('deletedBrands', JSON.stringify(deletedIds));
+            }
+            $('#row-' + id).remove();
+            Swal.fire("Đã xóa!", "Dòng đã được xóa khỏi bảng trên trình duyệt.", "success");
+          }
+        });
+      });
+
+      // Hiển thị thông báo thành công khi thêm
+      const msg = $('#success-message').data('message');
+      if (msg) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Thành công',
+          text: msg,
+          timer: 3000,
+          showConfirmButton: false
+        });
+      }
+
+      // Tìm kiếm theo mã hoặc tên
+      $('#search-input').on('keyup', function () {
+        const keyword = $(this).val().toLowerCase().trim();
+        $('tbody tr').each(function () {
+          const code = $(this).find('td:nth-child(2)').text().toLowerCase();
+          const name = $(this).find('td:nth-child(3)').text().toLowerCase();
+          if (code.includes(keyword) || name.includes(keyword)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+    });
+  </script>
+
+</div>
+</body>
+</html>

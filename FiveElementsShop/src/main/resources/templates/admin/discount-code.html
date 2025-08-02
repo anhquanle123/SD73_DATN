@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/admin-layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.4em 0.7em;
+    }
+    .table th, .table td {
+        vertical-align: middle;
+    }
+     .toast {
+        min-width: 300px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .toast-header i {
+        margin-right: 8px;
+    }
+    .toast .close {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+</style>
+
+</head>
+<body>
+<div id="app" layout:fragment="content">
+<h4 class="my-3">Phiếu giảm giá</h4>
+
+    <!-- Bộ lọc -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light d-flex align-items-center">
+            <i class="fas fa-filter mr-2"></i> <strong>Bộ lọc</strong>
+        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="code">Tên khuyến mãi:</label>
+                    <input type="text" class="form-control" id="code" name="code" placeholder="Tìm kiếm..." th:value="${dataSearch.code}">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="maximumUsage">Số lượng tồn:</label>
+                    <input type="text" class="form-control" id="maximumUsage" name="maximumUsage" placeholder="Tìm kiếm..." th:value="${dataSearch.maximumUsage}">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="startDate">Từ ngày:</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate" th:value="${#dates.format(dataSearch.startDate, 'yyyy-MM-dd')}">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="endDate">Đến ngày:</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate" th:value="${#dates.format(dataSearch.endDate, 'yyyy-MM-dd')}">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="status">Trạng thái:</label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="">Tất cả</option>
+                        <option value="0" th:selected="${dataSearch.status == 0}">Ngừng kích hoạt</option>
+                        <option value="1" th:selected="${dataSearch.status == 1}">Đang kích hoạt</option>
+                        <option value="2" th:selected="${dataSearch.status == 2}">Sắp đến</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2 d-flex align-items-end">
+                    <button type="button" id="search-btn" class="btn btn-primary mr-2 w-100">
+                        <i class="fa fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút Thêm -->
+    <div class="mb-2 text-right">
+        <a href="/admin-only/discount-code-create" class="btn btn-primary">
+            <i class="fa fa-plus-square"></i> Thêm
+        </a>
+    </div>
+
+
+    <div class="my-3 d-flex align-items-center">
+    <i class="fas fa-list-ul text-primary mr-2"></i>
+    <h5 class="mb-0 font-weight-bold">Danh sách phiếu giảm giá</h5>
+    </div>
+
+
+    <!-- Bảng danh sách -->
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-warning text-white font-weight-bold">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên khuyến mãi</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Kiểu</th>
+                    <th>Giá trị giảm</th>
+                    <th>Số lượng tồn</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr th:each="discountCode, iStat : ${discountCodes}">
+                <td th:text="${iStat.count}"></td>
+                <td th:text="${discountCode.code}"></td>
+                <td th:text="${#dates.format(discountCode.startDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${#dates.format(discountCode.endDate, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <span th:if="${discountCode.getType() == 1}">Phần trăm</span>
+                    <span th:if="${discountCode.getType() == 2}">Số tiền</span>
+                </td>
+                <td>
+                    <span th:if="${discountCode.getType() == 1}" th:text="${discountCode.getPercentage()} + '%'"></span>
+                    <span th:if="${discountCode.getType() == 2}" th:text="${#numbers.formatDecimal(discountCode.getDiscountAmount(), 0, 'POINT', 0, 'COMMA')} + ' VND'"></span>
+                </td>
+                <td th:text="${discountCode.maximumUsage}"></td>
+                <td>
+                    <!-- Sắp đến: Ngày bắt đầu > hôm nay -->
+                    <span th:if="${discountCode.status == 1 and discountCode.startDate > #dates.createNow()}"
+                          class="badge badge-warning">Sắp đến</span>
+
+                    <!-- Đang diễn ra: hôm nay nằm giữa start và end -->
+                    <span th:if="${discountCode.status == 1 and discountCode.startDate <= #dates.createNow() and discountCode.endDate >= #dates.createNow()}"
+                          class="badge badge-success">Đang kích hoạt</span>
+
+                    <!-- Hết hạn: ngày kết thúc < hôm nay -->
+                    <span th:if="${discountCode.status == 1 and discountCode.endDate < #dates.createNow()}"
+                          class="badge badge-secondary">Hết hạn</span>
+
+                    <!-- Đã đóng -->
+                    <span th:if="${discountCode.status == 0}" class="badge badge-danger">Ngừng kích hoạt</span>
+
+                    <!-- Chưa kích hoạt (trạng thái hệ thống) -->
+                    <span th:if="${discountCode.status == 2}" class="badge badge-info">Chưa kích hoạt</span>
+                </td>
+
+                <td>
+                    <form th:if="${discountCode.status == 1}" th:action="@{/admin/update-discount-status/0}" method="post" class="form-close-discount d-inline">
+                        <input type="hidden" name="id" th:value="${discountCode.id}">
+                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Đóng mã giảm giá">
+                            <i class="fa fa-times-circle"></i>
+                        </button>
+                    </form>
+                    <form th:if="${discountCode.status == 0}" th:action="@{/admin/update-discount-status/1}" method="post" class="d-inline">
+                        <input type="hidden" name="id" th:value="${discountCode.id}">
+                        <button type="submit" class="btn btn-outline-success btn-sm" title="Mở mã giảm giá">
+                            <i class="fa fa-check-circle"></i>
+                        </button>
+                    </form>
+                    <a th:href="@{'/admin-only/discount-code/edit/' + ${discountCode.id}}" class="btn btn-outline-primary btn-sm" title="Chỉnh sửa">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="float-right">
+        <ul id="pagination" class="pagination"></ul>
+    </div>
+
+    <!-- Thông báo -->
+    <div id="successToast" class="toast show position-fixed top-0 end-0 m-3" role="alert" style="z-index: 1055;" th:if="${message != null}">
+    <div class="toast-header bg-success bg-tertiary text-white">
+        <i class="fa fa-check-circle mr-2"></i>
+        <strong class="me-auto">Thông báo</strong>
+        <button type="button" class="ml-2 mb-1 close text-white" data-bs-dismiss="toast">&times;</button>
+    </div>
+    <div class="toast-body">
+        <span th:text="${message}">Thêm thành công!</span>
+    </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" th:inline="javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
+    <script th:inline="javascript">
+        var totalPage = /*[[${totalPage}]]*/ '';
+        var currentPage = /*[[${currentPage}]]*/ '';
+
+        $(".form-close-discount").on('submit', function (e) {
+            e.preventDefault();
+            var form = this; // select the form
+
+            Swal.fire({
+                title: 'Xác nhận đóng mã giảm giá',
+                text: 'Bạn có chắc chắn muốn đóng mã giảm giá này không? Sau khi đóng, khách hàng sẽ không thể sử dụng mã này nữa.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy bỏ',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-xl',
+                    confirmButton: 'px-4 py-2',
+                    cancelButton: 'px-4 py-2'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            })
+        })
+
+        var url = '/admin-only/discount-code?page=0';
+        $('#search-btn').on('click', function () {
+
+            var code = $('#code').val().trim()
+            // var detail = $("#name").val().trim()
+            var startDate = $("#startDate").val()
+            var endDate = $("#endDate").val()
+            var status = $("#status").val()
+
+            if(startDate && endDate) {
+                if(startDate >= endDate) {
+                    Swal.fire({
+                        text: 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc',
+                        icon: 'error'
+                    })
+                    return
+                }
+
+            }
+
+            if (code) {
+                url += '&code=' + code
+            }
+            // if(detail) {
+            //     url += '&detail=' + detail
+            // }
+            if(startDate) {
+                url += '&startDate=' + startDate
+            }
+            if(endDate) {
+                url += '&endDate=' + endDate
+            }
+            if(status) {
+                url += '&status=' + status
+            }
+            window.location.href = url
+        })
+
+        $('#pagination').twbsPagination({
+            startPage: parseInt(currentPage) + 1,
+            totalPages: parseInt(totalPage),
+            visiblePages: 5,
+            first: '<i class="fas fa-angle-double-left"></i>',
+            next: '<i class="fas fa-angle-left"></i>',
+            prev: '<i class="fas fa-angle-right"></i>',
+            last: '<i class="fas fa-angle-double-right"></i>',
+            initiateStartPageClick:false,
+
+            onPageClick: function (event, page) {
+                var cleanedUrl = url.replace(/[?&]page=\d+/, '');
+                cleanedUrl += '&page=' + page
+                window.location.href = cleanedUrl
+            }
+        });
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toast = document.getElementById("successToast");
+        if (toast) {
+            setTimeout(() => {
+                toast.classList.remove("show");
+                toast.classList.add("hide");
+            }, 3000);
+        }
+    });
+    </script>
+
+</div>
+
+</body>
+</html>
