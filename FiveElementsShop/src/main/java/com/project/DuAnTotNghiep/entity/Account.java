@@ -37,6 +37,9 @@ public class Account implements Serializable {
     @JoinColumn(name = "customer_id", nullable = true)
     private Customer customer;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = true)
+    private Employee employee;
 
     @ManyToOne
     @JoinColumn(name = "roleId")

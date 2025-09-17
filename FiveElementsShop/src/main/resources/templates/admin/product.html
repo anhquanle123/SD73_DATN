@@ -66,7 +66,7 @@
     </form>
 
     <a href="/admin/product-create" class="btn btn-success my-3 float-right"><i class="fa fa-plus-square"></i> <span>Thêm sản phẩm</span></a>
-<!--    <div class=" alert alert-success" style="margin-top: 80px" th:if="${successMessage != ''}" th:text="${successMessage}"></div>-->
+    <!--    <div class=" alert alert-success" style="margin-top: 80px" th:if="${successMessage != ''}" th:text="${successMessage}"></div>-->
     <table class="table my-3">
         <thead class="thead-light">
         <tr>
@@ -84,10 +84,9 @@
                 <a th:href="@{/admin/product-all(page=0, sort=${sortField == 'chatLieu' && sortDirection == 'asc' ? 'chatLieu,desc' : 'chatLieu,asc'}, maSanPham=${maSanPham}, tenSanPham=${tenSanPham}, nhanHang=${nhanHang}, chatLieu=${chatLieu}, theLoai=${theLoai}, trangThai=${trangThai})}" class="sort-link">↑</a>
                 <a th:href="@{/admin/product-all(page=0, sort=${sortField == 'chatLieu' && sortDirection == 'desc' ? 'chatLieu,asc' : 'chatLieu,desc'}, maSanPham=${maSanPham}, tenSanPham=${tenSanPham}, nhanHang=${nhanHang}, chatLieu=${chatLieu}, theLoai=${theLoai}, trangThai=${trangThai})}" class="sort-link">↓</a>
             </th>
-            <th scope="col">Thể loại
-            </th>
+            <th scope="col">Thể loại</th>
             <th scope="col">Trạng thái</th>
-            <th scope="col"></th>
+            <th scope="col">Công cụ</th>
         </tr>
         </thead>
         <tbody>
@@ -107,7 +106,20 @@
             </span>
             </td>
 
-           
+            <td>
+                <a th:href="@{'/admin/chi-tiet-san-pham/' + ${item.maSanPham}}"
+                   class="btn btn-secondary btn-sm">
+                    <i class="fa fa-info-circle"></i> Chi tiết
+                </a>
+                <a th:href="@{'/admin/product-edit/' + ${item.maSanPham}}" class="cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m7 17.013l4.413-.015l9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583v4.43zM18.045 4.458l1.589 1.583l-1.597 1.582l-1.586-1.585l1.594-1.58zM9 13.417l6.03-5.973l1.586 1.586l-6.029 5.971L9 15.006v-1.589z"/><path fill="currentColor" d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2z"/></svg>
+                </a>
+
+                <button type="button" class="btn btn-danger btn-sm remove-btn"
+                        th:attr="data-row-id=${item.idSanPham}">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -155,6 +167,19 @@
             });
         })
     </script>
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".remove-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này")) {
+                        const row = this.closest("tr");
+                        row.remove(); // Xóa dòng khỏi bảng
+                    }
+                });
+            });
+        });
+    </script>
+
 </div>
 </body>
 </html>

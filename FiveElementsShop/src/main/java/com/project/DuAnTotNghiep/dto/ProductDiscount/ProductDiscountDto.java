@@ -8,6 +8,8 @@ import java.util.Date;
 @Data
 public class ProductDiscountDto {
     private Long id;
+    private String code;
+    private String name;
     private Double discountedAmount;
     private Date startDate;
     private Date endDate;

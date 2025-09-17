@@ -1,182 +1,205 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{admin/admin-layout.html}">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/admin-layout.html}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-
+    <title>Thêm sản phẩm</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="custom-modal" id="add-color-modal">
-        <div class="modal-content rounded">
-            <span class="close" >&times;</span>
-            <div class="modal-header mb-1">
-                <h5>Thêm màu mới</h5>
-            </div>
-            <form id="color-form">
-                <div class="form-group">
-                    <label for="colorCode">Mã màu:</label>
-                    <span class="red_require"> *</span>
-                    <input class="form-control" type="text" name="colorCode" id="colorCode" placeholder="Nhập mã màu">
-                    <span class="error"></span>
-                    <!-- Add more fields as needed -->
+    <div class="container-fluid">
+        <!-- Modal thêm màu -->
+        <div class="custom-modal" id="add-color-modal">
+            <div class="modal-content rounded p-4">
+                <span class="close">&times;</span>
+                <div class="modal-header mb-3">
+                    <h5 class="mb-0">Thêm màu mới</h5>
                 </div>
-
-                <div class="form-group">
-                    <label for="sizeName">Tên màu:</label>
-                    <span class="red_require"> *</span>
-                    <input class="form-control" type="text" name="colorName" id="colorName" placeholder="Nhập tên màu">
-                    <span class="error"></span>
-                    <!-- Add more fields as needed -->
-                </div>
-                <button class="btn btn-primary mt-2 w-100" id="save-color-btn">Lưu</button>
-            </form>
-
-        </div>
-    </div>
-
-
-    <div class="custom-modal" id="add-size-modal">
-        <div class="modal-content rounded">
-            <span class="close" >&times;</span>
-            <div class="modal-header mb-1">
-                <h5>Thêm kích cỡ mới</h5>
-            </div>
-            <form id="size-form">
-                <div class="form-group">
-                    <label for="sizeCode">Mã kích cỡ:</label>
-                    <span class="red_require"> *</span>
-                    <input class="form-control" type="text" name="sizeCode" id="sizeCode" placeholder="Nhập mã kích cỡ">
-                    <span class="error"></span>
-                    <!-- Add more fields as needed -->
-                </div>
-
-                <div class="form-group">
-                    <label for="colorName">Tên cỡ:</label>
-                    <span class="red_require"> *</span>
-                    <input class="form-control" type="text" name="sizeName" id="sizeName" placeholder="Nhập tên cỡ">
-                    <span class="error"></span>
-                    <!-- Add more fields as needed -->
-                </div>
-                <button class="btn btn-primary mt-2 w-100" id="save-size-btn">Lưu</button>
-            </form>
-
-        </div>
-    </div>
-
-
-    <h4>Thông tin sản phẩm chi tiết</h4>
-    <form th:object="${form}" th:method="post" th:action="@{/admin/product-save}" enctype="multipart/form-data" id="myForm">
-        <div class="my-3 attr-list" >
-            <div class="form-table" th:each="productDetail, iterStat : *{productDetailList}">
-                <div class="form-row align-items-center">
-                    <div class="form-group col-md-2">
-                        <label>Barcode</label>
-                        <input type="text" class="form-control barcode-select" th:field="*{productDetailList[__${iterStat.index}__].barcode}" placeholder="VD:1234" readonly required>
-                    </div>
-                    <div class="form-group col-md-2">
-                       <div class="select-container">
-                           <label>Màu sắc</label>
-                           <span class="red_require"> *</span>
-                           <select class="form-select color-select" th:field="*{productDetailList[__${iterStat.index}__].color}">
-                               <option th:each="color: ${listColor}" th:value="${color.id}" th:text="${color.name}"></option>
-                           </select>
-                           <span class="plus-icon"><i class="add-color fas fa-plus"></i></span>
-                       </div>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <div class="select-container">
-                            <label>Kích cỡ</label>
-                            <span class="red_require"> *</span>
-                            <select class="form-select size-select" th:field="*{productDetailList[__${iterStat.index}__].size}">
-                                <option th:each="size: ${listSize}" th:value="${size.id}" th:text="${size.name}"></option>
-                            </select>
-                            <span class="plus-icon"><i class="add-size fas fa-plus"></i></span>
+                <form id="color-form">
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="colorCode" class="form-label">Mã màu <span class="red_require">*</span></label>
+                            <input class="form-control" type="text" name="colorCode" id="colorCode" placeholder="Nhập mã màu">
+                            <span class="error"></span>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="colorName" class="form-label">Tên màu <span class="red_require">*</span></label>
+                            <input class="form-control" type="text" name="colorName" id="colorName" placeholder="Nhập tên màu">
+                            <span class="error"></span>
                         </div>
                     </div>
-                    <div class="form-group col-md-2">
-                        <label>Số lượng</label>
-                        <span class="red_require"> *</span>
-                        <input type="number" class="form-control product-quantity" th:field="*{productDetailList[__${iterStat.index}__].quantity}" required>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>Giá tiền</label>
-                        <span class="red_require"> *</span>
-                        <input type="text" class="form-control product-price" th:field="*{productDetailList[__${iterStat.index}__].price}" required>
-                    </div>
-                </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-2" id="save-color-btn">Lưu</button>
+                </form>
+            </div>
+        </div>
 
-<!--                <div class="form-row">-->
-<!--                   -->
-<!--                </div>-->
+        <!-- Modal thêm kích cỡ -->
+        <div class="custom-modal" id="add-size-modal">
+            <div class="modal-content rounded p-4">
+                <span class="close">&times;</span>
+                <div class="modal-header mb-3">
+                    <h5 class="mb-0">Thêm kích cỡ mới</h5>
+                </div>
+                <form id="size-form">
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="sizeCode" class="form-label">Mã kích cỡ <span class="red_require">*</span></label>
+                            <input class="form-control" type="text" name="sizeCode" id="sizeCode" placeholder="Nhập mã kích cỡ">
+                            <span class="error"></span>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="sizeName" class="form-label">Tên kích cỡ <span class="red_require">*</span></label>
+                            <input class="form-control" type="text" name="sizeName" id="sizeName" placeholder="Nhập tên kích cỡ">
+                            <span class="error"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-2" id="save-size-btn">Lưu</button>
+                </form>
             </div>
         </div>
-        <div class="form-row ml-2">
-            <div class="form-group">
-                <button type="button" class="btn btn-danger  rounded" id="add-attr-btn">Thêm thuộc tính</button>
-            </div>
-        </div>
-        <div class="form-section">
-            <h2 class="title">Hình ảnh</h2>
-            <label class="control-label">
-                Chọn 1 hoặc nhiều hình ảnh
-            </label>
-            <div class="image-group d-flex">
-                <div class="selected-files d-flex" id="selected-images">
 
-                </div>
-                <div class="image-upload">
-                    <label for="file-input" class="label-select-img">
-                        <i class="fa fa-plus"></i>
-                    </label>
-                    <input id="file-input"  type="file" multiple accept="image/*" />
+        <!-- Form chính -->
+        <h4 class="mb-4">Thông tin sản phẩm chi tiết</h4>
+        <form th:object="${form}" th:method="post" th:action="@{/admin/product-save}" enctype="multipart/form-data" id="myForm">
+            <!-- Danh sách thuộc tính -->
+            <div class="attr-list mb-4">
+                <div class="form-table card p-3 mb-3" th:each="productDetail, iterStat : *{productDetailList}">
+                    <div class="row align-items-end">
+                        <div class="col-md-2 form-group mb-3">
+                            <label class="form-label">Barcode</label>
+                            <input type="text" class="form-control barcode-select" th:field="*{productDetailList[__${iterStat.index}__].barcode}" placeholder="VD: 1234" readonly required>
+                        </div>
+                        <div class="col-md-2 form-group mb-3">
+                            <div class="select-container">
+                                <label class="form-label">Màu sắc <span class="red_require">*</span></label>
+                                <select class="form-select color-select" th:field="*{productDetailList[__${iterStat.index}__].color}">
+                                    <option th:each="color: ${listColor}" th:value="${color.id}" th:text="${color.name}"></option>
+                                </select>
+                                <span class="plus-icon" th:if="${iterStat.index == 0}"><i class="add-color fas fa-plus"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 form-group mb-3">
+                            <div class="select-container">
+                                <label class="form-label">Kích cỡ <span class="red_require">*</span></label>
+                                <select class="form-select size-select" th:field="*{productDetailList[__${iterStat.index}__].size}">
+                                    <option th:each="size: ${listSize}" th:value="${size.id}" th:text="${size.name}"></option>
+                                </select>
+                                <span class="plus-icon" th:if="${iterStat.index == 0}"><i class="add-size fas fa-plus"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 form-group mb-3">
+                            <label class="form-label">Số lượng <span class="red_require">*</span></label>
+                            <input type="number" min="0" class="form-control product-quantity" th:field="*{productDetailList[__${iterStat.index}__].quantity}" th:value="${iterStat.index == 0 ? 10 : ''}" placeholder="VD: 10" required>
+                        </div>
+                        <div class="col-md-2 form-group mb-3">
+                            <label class="form-label">Giá tiền <span class="red_require">*</span></label>
+                            <input type="number" min="0" step="1000" class="form-control product-price" th:field="*{productDetailList[__${iterStat.index}__].price}" th:value="${iterStat.index == 0 ? 100000 : ''}" placeholder="VD: 100000" required>
+                        </div>
+                        <div class="col-md-2 form-group mb-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm w-100 delete-attr-btn" th:attr="data-index=${iterStat.index}" th:disabled="${iterStat.index == 0}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <button type="submit" id="save-btn" class="btn btn-primary m-1 rounded"><i class="fa ti-save"></i> Lưu lại</button>
-        <a href="/admin/product-all" class="btn btn-secondary m-1 rounded"><i class="fa fa-mail-reply (alias)"></i>
-            <span>Hủy</span></a>
-    </form>
+
+            <!-- Nút thêm thuộc tính -->
+            <div class="mb-3">
+                <button type="button" class="btn btn-danger btn-sm" id="add-attr-btn">Thêm thuộc tính</button>
+            </div>
+
+            <!-- Bulk Create Section -->
+            <div class="bulk-create-section card p-3 mb-4">
+                <h5 class="mb-3 text-primary">Thêm nhanh nhiều Size và Màu</h5>
+                <div class="row">
+                    <div class="col-md-3 form-group mb-3">
+                        <label class="form-label">Kích cỡ <span class="red_require">*</span></label>
+                        <select name="bulkSizeIds" id="bulkSizeIds" class="form-select" multiple>
+                            <option th:each="size : ${listSize}" th:value="${size.id}" th:text="${size.name}"></option>
+                        </select>
+                        <span class="error"></span>
+                        <small class="form-text text-muted">Giữ Ctrl/Cmd để chọn nhiều</small>
+                    </div>
+                    <div class="col-md-3 form-group mb-3">
+                        <label class="form-label">Màu sắc <span class="red_require">*</span></label>
+                        <select name="bulkColorIds" id="bulkColorIds" class="form-select" multiple>
+                            <option th:each="color : ${listColor}" th:value="${color.id}" th:text="${color.name}"></option>
+                        </select>
+                        <span class="error"></span>
+                        <small class="form-text text-muted">Giữ Ctrl/Cmd để chọn nhiều</small>
+                    </div>
+                    <div class="col-md-3 form-group mb-3">
+                        <label class="form-label">Giá bán chung <span class="red_require">*</span></label>
+                        <input type="number" min="0" step="1000" class="form-control" name="bulkPrice" id="bulkPrice" placeholder="VD: 100000">
+                        <span class="error"></span>
+                    </div>
+                    <div class="col-md-3 form-group mb-3">
+                        <label class="form-label">Số lượng chung <span class="red_require">*</span></label>
+                        <input type="number" min="0" class="form-control" name="bulkQuantity" id="bulkQuantity" placeholder="VD: 10">
+                        <span class="error"></span>
+                    </div>
+                </div>
+                <button type="button" id="applyBulkBtn" class="btn btn-success btn-sm mt-2">
+                    <i class="fa fa-magic me-1"></i> Thêm nhanh
+                </button>
+            </div>
+
+            <!-- Hình ảnh -->
+            <div class="form-section card p-3 mb-4">
+                <h5 class="mb-3">Hình ảnh sản phẩm</h5>
+                <label class="form-label">Chọn 1 hoặc nhiều hình ảnh <span class="red_require">*</span></label>
+                <div class="image-group d-flex flex-wrap">
+                    <div class="selected-files d-flex flex-wrap" id="selected-images"></div>
+                    <div class="image-upload ms-2">
+                        <label for="file-input" class="label-select-img btn btn-outline-primary">
+                            <i class="fa fa-plus"></i>
+                        </label>
+                        <input id="file-input" type="file" multiple accept="image/*" class="d-none" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="d-flex gap-2">
+                <button type="submit" id="save-btn" class="btn btn-primary btn-sm"><i class="fa ti-save me-1"></i> Lưu</button>
+                <a href="/admin/product-all" class="btn btn-secondary btn-sm"><i class="fa fa-mail-reply me-1"></i> Hủy</a>
+            </div>
+        </form>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js" th:inline="javascript"></script>
     <script th:inline="javascript">
-
         $(document).ready(function () {
             var parentPlus;
 
-            // $('#save-btn').on('click', function () {
-            //     $('#myForm').submit()
-            //     Swal.fire({
-            //         title: 'Thêm sản phẩm thành công',
-            //         text: 'Bạn có muốn tiếp tục thêm không',
-            //         icon: 'success',
-            //         showCancelButton: true,
-            //         confirmButtonText: 'Tiếp tục thiết lập',
-            //         cancelButtonText: 'Quay lại trang danh sách'
-            //     }).then((result) => {
-            //         if (result.isConfirmed) {
-            //             // Chuyển trang khi người dùng nhấn "OK"
-            //             window.location.href = '/admin/product-create'
-            //         } else {
-            //             window.location.href = '/admin/product-all'
-            //         }
-            //     });
-            // })
+            $('#bulkPrice, #bulkQuantity').on('keydown', function(e) {
+                if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                    e.preventDefault();
+                }
+            });
+
+            $('#bulkPrice, #bulkQuantity').on('input change', function() {
+                if ($(this).val() < 0) {
+                    $(this).val(0);
+                }
+            });
 
             $('.add-color').on('click', function () {
-                $('#add-color-modal').show()
-                parentPlus = $(this).closest('.select-container').find('.color-select')
-            })
+                if ($(this).closest('.form-table').index() === 0) {
+                    $('#add-color-modal').show();
+                    parentPlus = $(this).closest('.select-container').find('.color-select');
+                }
+            });
 
             $('.add-size').on('click', function () {
-                $('#add-size-modal').show()
-                parentPlus = $(this).closest('.select-container').find('.size-select')
-            })
+                if ($(this).closest('.form-table').index() === 0) {
+                    $('#add-size-modal').show();
+                    parentPlus = $(this).closest('.select-container').find('.size-select');
+                }
+            });
 
-            //VALIDATE CATEGORY
             Validator({
                 form: '#color-form',
                 formGroupSelector: '.form-group',
@@ -188,34 +211,25 @@
                     Validator.maxLength('#colorCode', 20)
                 ],
                 onSubmit: async function (data) {
-                    var dataSend = {
-                        code: data.colorCode,
-                        name: data.colorName
-                    }
+                    var dataSend = { code: data.colorCode, name: data.colorName };
                     await $.ajax({
                         type: 'POST',
                         dataType: 'json',
                         contentType: "application/json; charset=utf-8",
                         data: JSON.stringify(dataSend),
                         url: '/api/color',
-
                         success: function (data) {
-                            $("#add-color-modal").hide()
-                            $('.color-select').append(`<option value="${data.id}">${data.name}</option>`)
-                            parentPlus.val(`${data.id}`).trigger('change')
+                            $("#add-color-modal").hide();
+                            $('.color-select').append(`<option value="${data.id}">${data.name}</option>`);
+                            parentPlus.val(`${data.id}`).trigger('change');
                         },
                         error: function (xhr, status, error) {
-                            Swal.fire({
-                                title: "Lỗi",
-                                text: xhr.responseJSON.message,
-                                icon: "error"
-                            });
+                            Swal.fire({ title: "Lỗi", text: xhr.responseJSON.message, icon: "error" });
                         }
-                    })
+                    });
                 }
             });
 
-            //VALIDATE CATEGORY
             Validator({
                 form: '#size-form',
                 formGroupSelector: '.form-group',
@@ -227,37 +241,28 @@
                     Validator.maxLength('#sizeCode', 20)
                 ],
                 onSubmit: async function (data) {
-                    var dataSend = {
-                        code: data.sizeCode,
-                        name: data.sizeName
-                    }
+                    var dataSend = { code: data.sizeCode, name: data.sizeName };
                     await $.ajax({
                         type: 'POST',
                         dataType: 'json',
                         contentType: "application/json; charset=utf-8",
                         data: JSON.stringify(dataSend),
                         url: '/api/size',
-
                         success: function (data) {
-                            $("#add-size-modal").hide()
-                            $('.size-select').append(`<option value="${data.id}">${data.name}</option>`)
-                            parentPlus.val(`${data.id}`).trigger('change')
+                            $("#add-size-modal").hide();
+                            $('.size-select').append(`<option value="${data.id}">${data.name}</option>`);
+                            parentPlus.val(`${data.id}`).trigger('change');
                         },
                         error: function (xhr, status, error) {
-                            Swal.fire({
-                                title: "Lỗi",
-                                text: xhr.responseJSON.message,
-                                icon: "error"
-                            });
+                            Swal.fire({ title: "Lỗi", text: xhr.responseJSON.message, icon: "error" });
                         }
-                    })
+                    });
                 }
             });
 
             $('.close').on('click', function () {
-                $(this).closest('.custom-modal').hide()
-            })
-
+                $(this).closest('.custom-modal').hide();
+            });
 
             function onlyAllowNumberInput(e) {
                 const key = e.key;
@@ -269,298 +274,277 @@
             function onlyAllowNumberInput2(e) {
                 const key = e.key;
                 const keyCode = e.keyCode || e.which;
-
-                // Allow backspace (key code 8)
                 if (keyCode === 8) {
                     return;
                 }
-
-                // Allow digits (key codes 48-57) and numpad digits (key codes 96-105)
                 if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105)) {
                     return;
                 }
-
                 e.preventDefault();
             }
+
             $('.product-quantity').on('keydown', function (e) {
-                onlyAllowNumberInput(e)
-            })
+                onlyAllowNumberInput(e);
+            });
+
             $('.product-quantity').on('input change', function (e) {
                 if($(this).val() < 0) {
-                    $(this).val(0)
+                    $(this).val(0);
                 }
-            })
+            });
 
             $('.product-price').on('keydown', function (e) {
-                onlyAllowNumberInput2(e)
-            })
+                onlyAllowNumberInput2(e);
+            });
 
-            // $('.product-price').on('focusout', function (e) {
-            //     if($(this).val() == "") {
-            //         $(this).val(0)
-            //     }
-            // })
+            $('.product-price').on('input change', function (e) {
+                if ($(this).val() < 0) {
+                    $(this).val(0);
+                }
+            });
 
-            //Handle add product detail
-            document.querySelector('.product-price').value = 0
-            var listDetail = []
-            var detail = {}
-            var colorFirst = 1
-            var sizeFirst = 1
-            detail.color = colorFirst
-            detail.size = sizeFirst
-            listDetail.push(detail)
+            var listDetail = [];
+            var detail = {};
+            var colorFirst = 1;
+            var sizeFirst = 1;
+            detail.color = colorFirst;
+            detail.size = sizeFirst;
+            detail.price = 100000; // Đặt giá mặc định cho dòng đầu
+            detail.quantity = 10; // Đặt số lượng mặc định cho dòng đầu
+            listDetail.push(detail);
+
+            // Đặt giá trị mặc định cho dòng đầu
+            $('.form-table').first().find('.product-price').val(100000);
+            $('.form-table').first().find('.product-quantity').val(10);
+
             $(".color-select").first().on('change', function (e) {
-                colorFirst = $(this).val()
-                if(colorFirst != '' && $(".size-select").val() != '') {
-                    listDetail[0].color = colorFirst
-                    listDetail[0].size = $(".size-select").val()
+                colorFirst = $(this).val();
+                if (colorFirst != '' && $(".size-select").val() != '') {
+                    listDetail[0].color = colorFirst;
+                    listDetail[0].size = $(".size-select").val();
                 }
-            })
+            });
 
-           $(".size-select").first().on('change', function (e) {
-                sizeFirst = $(this).val()
-                if(sizeFirst != '' && $(".color-select").val() != '') {
-                    listDetail[0].color = $(".color-select").val()
-                    listDetail[0].size = sizeFirst
+            $(".size-select").first().on('change', function (e) {
+                sizeFirst = $(this).val();
+                if (sizeFirst != '' && $(".color-select").val() != '') {
+                    listDetail[0].color = $(".color-select").val();
+                    listDetail[0].size = sizeFirst;
                 }
-
-            })
+            });
 
             function generateRandomBarcode() {
                 return Math.floor(100000000000 + Math.random() * 900000000000).toString();
             }
 
-            // Autofill barcode when the page loads
             $('.barcode-select').val(generateRandomBarcode());
 
+            $('.delete-attr-btn').on('click', function () {
+                if (!$(this).is(':disabled')) {
+                    const formTable = $(this).closest('.form-table');
+                    const color = formTable.find('.color-select').val();
+                    const size = formTable.find('.size-select').val();
+                    formTable.remove();
+                    removeDetailObj(color, size);
+                }
+            });
 
+            $('#add-attr-btn').on('click', addItem);
 
-            $('#add-attr-btn').on('click', addItem)
             function addItem() {
-                var detailId = detail.id + 1;
                 var template = document.querySelector('.form-table').cloneNode(true);
-                var formRows = template.querySelectorAll('.form-row');
-
-                // Update the index to ensure uniqueness for the new product detail
                 var newIndex = document.querySelectorAll('.form-table').length;
-
-                // Update the names of input fields to ensure uniqueness
                 template.querySelectorAll('input, select').forEach(function(input) {
                     var name = input.getAttribute('name');
                     if (name) {
-                        input.setAttribute('name', name.replace('productDetailList[0]', 'productDetailList[' + newIndex +']'));
-                        input.value = ''; // Clear input values if needed
+                        input.setAttribute('name', name.replace('productDetailList[0]', 'productDetailList[' + newIndex + ']'));
+                        input.value = '';
                     }
                 });
 
-                template.querySelector('.product-price').value = 10000
-                template.querySelector('.product-quantity').value = 1
+                template.querySelector('.product-price').value = 10000;
+                template.querySelector('.product-quantity').value = 1;
+                template.querySelector('.barcode-select').value = generateRandomBarcode();
 
-                $('.product-quantity').on('keydown', function (e) {
-                    onlyAllowNumberInput(e)
-                })
-                $('.product-quantity').on('input change', function (e) {
-                    if($(this).val() < 0) {
-                        $(this).val(0)
-                    }
-                })
-                $('.product-price').on('keydown', function (e) {
-                    onlyAllowNumberInput2(e)
-                })
-                // $('.product-quantity').on('focusout', function (e) {
-                //     if($(this).val() == "") {
-                //         $(this).val(0)
-                //     }
-                // })
-                const deleteButtonContainer = document.createElement('div')
-                const deleteButton = document.createElement('button');
-                deleteButton.type = 'button';
-                deleteButton.classList.add('btn', 'btn-danger', 'mt-3');
-                deleteButton.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
-                deleteButtonContainer.appendChild(deleteButton)
+                const colorPlus = template.querySelector('.add-color');
+                const sizePlus = template.querySelector('.add-size');
+                if (colorPlus) colorPlus.parentElement.style.display = 'none';
+                if (sizePlus) sizePlus.parentElement.style.display = 'none';
 
-                template.querySelector('.form-row').appendChild(deleteButtonContainer)
-
-                document.querySelector('.attr-list').appendChild(template);
-
-                var color = ''
-                var size = ''
-                template.querySelector(".color-select").addEventListener('change', function (e) {
-                    color = e.target.value
-                    if(!checkDuplicateSizeAndColor(color, size, template) && color != '' && template.querySelector(".size-select").value != '') {
-                        listDetail.push({
-                            color: color,
-                            size: size
-                        })
-                    }
-                })
-
-                template.querySelector(".size-select").addEventListener('change', function (e) {
-                    size = e.target.value
-                    if(!checkDuplicateSizeAndColor(color, size, template) && size != '' && template.querySelector(".color-select").value != '') {
-                        listDetail.push({
-                            color: color,
-                            size: size
-                        })
-                    }
-
-                })
-
-                deleteButton.onclick = function () {
-                    document.querySelector('.attr-list').removeChild(template)
-                    removeDetailObj(color, size)
+                const deleteBtn = template.querySelector('.delete-attr-btn');
+                if (deleteBtn) {
+                    deleteBtn.setAttribute('data-index', newIndex);
+                    deleteBtn.disabled = false;
+                    deleteBtn.style.display = 'block';
+                    deleteBtn.addEventListener('click', function () {
+                        const formTable = $(this).closest('.form-table');
+                        const color = formTable.find('.color-select').val();
+                        const size = formTable.find('.size-select').val();
+                        formTable.remove();
+                        removeDetailObj(color, size);
+                    });
                 }
 
-                template.querySelector('.barcode-select').value = generateRandomBarcode()
-
-                $('.add-color').on('click', function () {
-                    $('#add-color-modal').show()
-                    parentPlus = $(this).closest('.select-container').find('.color-select')
-                })
-
-                $('.add-size').on('click', function () {
-                    $('#add-size-modal').show()
-                    parentPlus = $(this).closest('.select-container').find('.size-select')
-                })
+                var color = template.querySelector('.color-select').value;
+                var size = template.querySelector('.size-select').value;
+                if (!checkDuplicateSizeAndColor(color, size)) {
+                    document.querySelector('.attr-list').appendChild(template);
+                    template.querySelector(".color-select").addEventListener('change', function (e) {
+                        color = e.target.value;
+                        if (color != '' && template.querySelector(".size-select").value != '') {
+                            if (checkDuplicateSizeAndColor(color, template.querySelector(".size-select").value, template)) {
+                                document.querySelector('.attr-list').removeChild(template);
+                            } else {
+                                listDetail.push({ color: color, size: template.querySelector(".size-select").value });
+                            }
+                        }
+                    });
+                    template.querySelector(".size-select").addEventListener('change', function (e) {
+                        size = e.target.value;
+                        if (size != '' && template.querySelector(".color-select").value != '') {
+                            if (checkDuplicateSizeAndColor(template.querySelector(".color-select").value, size, template)) {
+                                document.querySelector('.attr-list').removeChild(template);
+                            } else {
+                                listDetail.push({ color: template.querySelector(".color-select").value, size: size });
+                            }
+                        }
+                    });
+                } else {
+                    Toastify({
+                        text: "Màu sắc và cỡ đã tồn tại",
+                        style: { color: "white", background: "red" }
+                    }).showToast();
+                }
             }
 
             function removeDetailObj(color, size) {
-
                 listDetail = listDetail.filter(function (obj) {
                     return obj.color !== color || obj.size !== size;
                 });
             }
 
-            function checkDuplicateSizeAndColor(color, size, template) {
-                listDetail.forEach(item => {
-                    if(item.color == color && item.size == size) {
-                        document.querySelector('.attr-list').removeChild(template)
-                        Toastify({
-                            text: "Màu sắc và cỡ đã tồn tại",
-                            style: {
-                                color: "white",
-                                background: "red",
-                            }
-                        }).showToast();
-                        return true
+            function checkDuplicateSizeAndColor(color, size, template = null) {
+                if (!color || !size) return false;
+                for (var item of listDetail) {
+                    if (item.color == color && item.size == size) {
+                        if (template) {
+                            Toastify({
+                                text: "Màu sắc và cỡ đã tồn tại",
+                                style: { color: "white", background: "red" }
+                            }).showToast();
+                        }
+                        return true;
                     }
-                })
-                return false
+                }
+                return false;
             }
 
+            const fileInput = document.getElementById("file-input");
+            fileInput.addEventListener('change', (e) => displaySelectedImages(e));
 
-            //Handle file input
-            const fileInput = document.getElementById("file-input")
-            fileInput.addEventListener('change', (e) => displaySelectedImages(e))
             const selectedFileNames = new Set();
             var fileSend = [];
+
             function displaySelectedImages(event) {
                 const selectedImagesContainer = document.getElementById('selected-images');
-
                 const files = event.target.files;
-
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
-
-                    // Check if the selected file is an image
                     if (file.type.startsWith('image/')) {
                         const fileSizeInMB = file.size / (1024 * 1024);
-                        if(fileSizeInMB > 3 ) {
-                            Swal.fire("Lỗi", "Vui lòng chọn ảnh có dung lượng < 3MB", 'error')
+                        if (fileSizeInMB > 3) {
+                            Swal.fire("Lỗi", "Vui lòng chọn ảnh có dung lượng < 3MB", "error");
                         } else {
-                            const fileName = file.name
-                            if (!selectedFileNames.has(fileName))
-                            {
-                                if(fileSend.length == 5) {
-                                    Swal.fire("Lỗi", "Bạn chỉ được thêm tối đa 5 ảnh", 'error')
-                                    return
+                            const fileName = file.name;
+                            if (!selectedFileNames.has(fileName)) {
+                                if (fileSend.length == 5) {
+                                    Swal.fire("Lỗi", "Bạn chỉ được thêm tối đa 5 ảnh", "error");
+                                    return;
                                 }
                                 fileSend.push(file);
                                 const reader = new FileReader();
-
                                 reader.onload = function (e) {
-                                    // Create a new div for the image
                                     const imageDiv = document.createElement('div');
                                     imageDiv.className = 'selected-file me-2';
-
-                                    // Create an image element
                                     const image = document.createElement('img');
                                     image.src = e.target.result;
                                     image.alt = 'Selected Image';
                                     image.width = 100;
                                     image.height = 120;
-
-                                    // Create a div for file details
-
-
-                                    // Create a button to remove the image
                                     const removeButton = document.createElement('div');
-                                    removeButton.innerHTML = `<div class="file-details">
-                                            <span class="text-danger">
-                                                <i class="fas fa-times-circle"></i>
-                                            </span>
-                                        </div>`
+                                    removeButton.innerHTML = `<div class="file-details"> <span class="text-danger"> <i class="fas fa-times-circle"></i> </span> </div>`;
                                     removeButton.onclick = function () {
-                                        // Remove the selected image when the button is clicked
                                         removeImage(selectedImagesContainer, imageDiv, fileName);
-
                                     };
-
-                                    // Append the image and remove button to the div
                                     imageDiv.appendChild(image);
-
                                     imageDiv.appendChild(removeButton);
-
-                                    // Append the image div to the selectedImagesContainer
                                     selectedImagesContainer.appendChild(imageDiv);
                                 };
-
                                 reader.readAsDataURL(file);
                             }
                         }
-
                     }
                 }
             }
-            function removeImage(selectedImagedContainer, imageDiv, fileName) {
-                // Remove the selected image from the UI and fileSend array
-                selectedImagedContainer.removeChild(imageDiv);
+
+            function removeImage(selectedImagesContainer, imageDiv, fileName) {
+                selectedImagesContainer.removeChild(imageDiv);
                 selectedFileNames.delete(fileName);
                 fileSend = fileSend.filter(file => file.name !== fileName);
             }
+
             document.getElementById("myForm").addEventListener('submit', async function (e) {
-                e.preventDefault()
-                if(fileSend.length < 1) {
-                    Swal.fire('Lỗi', "Vui lòng chọn ít nhất một hình ảnh", "error")
-                    return
+                e.preventDefault();
+                if (fileSend.length < 1) {
+                    Swal.fire('Lỗi', "Vui lòng chọn ít nhất một hình ảnh", "error");
+                    return;
                 }
-                var canAdd = true
+
+                var canAdd = true;
                 $('.color-select').each(function(index, item) {
                     if ($(item).val() == null) {
                         Swal.fire("Lỗi", "Vui lòng chọn màu cho sản phẩm");
                         canAdd = false;
-                        return false; // To break out of the loop
+                        return false;
                     }
                 });
 
                 $('.size-select').each(function(index, item) {
                     if ($(item).val() == null) {
-                        swal("Lỗi", "Vui lòng chọn kích cỡ cho sản phẩm");
+                        Swal.fire("Lỗi", "Vui lòng chọn kích cỡ cho sản phẩm");
                         canAdd = false;
-                        return false; // To break out of the loop
+                        return false;
                     }
                 });
-                if(!canAdd) {
-                    return false
+
+                $('.product-price').each(function(index, item) {
+                    const price = $(item).val();
+                    if (!price || price.trim() === '' || isNaN(price) || parseFloat(price) <= 0) {
+                        Swal.fire("Lỗi", "Giá bán không được để trống, không phải số, hoặc nhỏ hơn hoặc bằng 0");
+                        canAdd = false;
+                        return false;
+                    }
+                });
+
+                $('.product-quantity').each(function(index, item) {
+                    const quantity = $(item).val();
+                    if (!quantity || quantity.trim() === '' || isNaN(quantity) || parseInt(quantity) < 0) {
+                        Swal.fire("Lỗi", "Số lượng không được để trống, không phải số, hoặc nhỏ hơn 0");
+                        canAdd = false;
+                        return false;
+                    }
+                });
+
+                if (!canAdd) {
+                    return false;
                 }
 
-                var formData = new FormData(this)
-                fileSend.forEach(file => formData.append("files", file))
+                var formData = new FormData(this);
+                fileSend.forEach(file => formData.append("files", file));
                 await fetch("/admin/product-save", {
                     method: "POST",
                     body: formData,
-                })
+                });
 
                 Swal.fire({
                     title: 'Thêm sản phẩm thành công',
@@ -571,26 +555,119 @@
                     cancelButtonText: 'Quay lại trang danh sách'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Chuyển trang khi người dùng nhấn "OK"
-                        window.location.href = '/admin/product-create'
+                        window.location.href = '/admin/product-create';
                     } else {
-                        window.location.href = '/admin/product-all'
+                        window.location.href = '/admin/product-all';
                     }
                 });
+            });
 
-                // window.location = "/admin/product-all";
-            })
+            $('#applyBulkBtn').on('click', function () {
+                $('.bulk-create-section .error').text('').hide();
+                const sizeIds = $('#bulkSizeIds').val() || [];
+                const colorIds = $('#bulkColorIds').val() || [];
+                const price = $('#bulkPrice').val();
+                const quantity = $('#bulkQuantity').val();
+                let isValid = true;
 
+                if (sizeIds.length === 0) {
+                    $('#bulkSizeIds').siblings('.error').text('Vui lòng chọn ít nhất 1 kích cỡ').show();
+                    isValid = false;
+                }
 
+                if (colorIds.length === 0) {
+                    $('#bulkColorIds').siblings('.error').text('Vui lòng chọn ít nhất 1 màu').show();
+                    isValid = false;
+                }
 
-        })
+                if (!price || price.trim() === '') {
+                    $('#bulkPrice').siblings('.error').text('Vui lòng nhập giá bán chung').show();
+                    isValid = false;
+                } else {
+                    const priceNum = parseFloat(price);
+                    if (priceNum <= 0) {
+                        $('#bulkPrice').siblings('.error').text('Giá bán phải lớn hơn 0').show();
+                        isValid = false;
+                    }
+                }
 
+                if (!quantity || quantity.trim() === '') {
+                    $('#bulkQuantity').siblings('.error').text('Vui lòng nhập số lượng chung').show();
+                    isValid = false;
+                } else {
+                    const quantityNum = parseInt(quantity);
+                    if (quantityNum < 0) {
+                        $('#bulkQuantity').siblings('.error').text('Số lượng không được nhỏ hơn 0').show();
+                        isValid = false;
+                    }
+                }
 
+                if (!isValid) {
+                    Swal.fire("Lỗi", "Vui lòng kiểm tra và sửa các trường thông báo lỗi", "error");
+                    return;
+                }
 
+                let hasDuplicate = false;
+                sizeIds.forEach(function (sizeId) {
+                    colorIds.forEach(function (colorId) {
+                        if (checkDuplicateSizeAndColor(colorId, sizeId)) {
+                            hasDuplicate = true;
+                        }
+                    });
+                });
 
+                if (hasDuplicate) {
+                    Swal.fire("Lỗi", "Có thuộc tính màu và kích cỡ đã tồn tại", "error");
+                    return;
+                }
+
+                sizeIds.forEach(function (sizeId) {
+                    colorIds.forEach(function (colorId) {
+                        const template = document.querySelector('.form-table').cloneNode(true);
+                        const newIndex = document.querySelectorAll('.form-table').length;
+                        template.querySelectorAll('input, select').forEach(function (input) {
+                            const name = input.getAttribute('name');
+                            if (name) {
+                                input.setAttribute('name', name.replace('productDetailList[0]', 'productDetailList[' + newIndex + ']'));
+                            }
+                        });
+
+                        template.querySelector('.product-price').value = price;
+                        template.querySelector('.product-quantity').value = quantity;
+                        template.querySelector('.barcode-select').value = generateRandomBarcode();
+                        template.querySelector('.size-select').value = sizeId;
+                        template.querySelector('.color-select').value = colorId;
+
+                        const colorPlus = template.querySelector('.add-color');
+                        const sizePlus = template.querySelector('.add-size');
+                        if (colorPlus) colorPlus.parentElement.style.display = 'none';
+                        if (sizePlus) sizePlus.parentElement.style.display = 'none';
+
+                        const deleteBtn = template.querySelector('.delete-attr-btn');
+                        if (deleteBtn) {
+                            deleteBtn.setAttribute('data-index', newIndex);
+                            deleteBtn.disabled = false;
+                            deleteBtn.style.display = 'block';
+                            deleteBtn.addEventListener('click', function () {
+                                const formTable = $(this).closest('.form-table');
+                                const color = formTable.find('.color-select').val();
+                                const size = formTable.find('.size-select').val();
+                                formTable.remove();
+                                removeDetailObj(color, size);
+                            });
+                        }
+
+                        document.querySelector('.attr-list').appendChild(template);
+                        listDetail.push({ color: colorId, size: sizeId });
+                    });
+                });
+
+                $('#bulkSizeIds, #bulkColorIds').val(null).trigger('change');
+                $('#bulkPrice, #bulkQuantity').val('');
+                Swal.fire("Thành công", "Đã thêm nhanh các thuộc tính Size × Màu", "success");
+            });
+        });
     </script>
 </div>
-
-
 </body>
 </html>

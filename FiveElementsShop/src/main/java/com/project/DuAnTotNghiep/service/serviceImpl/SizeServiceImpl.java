@@ -105,4 +105,10 @@ public class SizeServiceImpl implements SizeService {
         Size sizeNew = sizeRepository.save(size);
         return new SizeDto(sizeNew.getId(), sizeNew.getCode(), sizeNew.getName());
     }
+    @Override
+    public List<Size> findByIds(List<Long> ids) {
+        // JpaRepository đã có sẵn hàm findAllById
+        return sizeRepository.findAllById(ids);
+    }
+
 }

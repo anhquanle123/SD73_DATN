@@ -108,7 +108,7 @@
         <div class="product-detail-section">
             <div class="product-info-container">
                 <div class="heading">
-                    <h5>Danh sách các phiên bảnx</h5>
+                    <h5>Danh sách các phiên bản</h5>
                 </div>
                 <div class="version-list">
                     <div class="version-item" th:each="version, iter: ${productDetails}">
@@ -117,7 +117,7 @@
                             <span class="text-dark font-italic">Phiên bản [[${iter.index + 1}]]</span>
                         </div>
                         <div class="row align-items-center text">
-                            <p class="col-md-2">Có thể bán: <span class="font-weight-bold" th:text="${version.quantity}"></span></p>
+                            <p class="col-md-2">Số lượng tồn: <span class="font-weight-bold" th:text="${version.quantity}"></span></p>
                             <p class="col-md-2">Giá: <span class="font-weight-bold" th:text="${#numbers.formatDecimal(version.price, 0, 'POINT', 0, 'COMMA')}"></span></p>
                             <p class="col-md-2">Màu: <span class="font-weight-bold" th:text="${version.color.name}"></span></p>
                             <p class="col-md-2">Kích cỡ: <span class="font-weight-bold" th:text="${version.size.name}"></span></p>

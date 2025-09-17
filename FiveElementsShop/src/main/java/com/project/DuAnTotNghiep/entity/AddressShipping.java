@@ -30,7 +30,7 @@ public class AddressShipping {
 
 
     @Nationalized
-    @Column(nullable = false, length = 150)
+    @Column(nullable = true, length = 150)
     private String address;
 
     @ManyToOne

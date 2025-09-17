@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 
         Double minPrice = Double.valueOf(1000000000);
         for (ProductDetail productDetail:
-             product.getProductDetails()) {
+                product.getProductDetails()) {
             if(productDetail.getPrice() < minPrice) {
                 minPrice = productDetail.getPrice();
             }
@@ -205,7 +205,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDetailDto> productDetailDtoList = new ArrayList<>();
         Double priceMin = Double.valueOf(100000000);
         for (ProductDetail productDetail:
-             product.getProductDetails()) {
+                product.getProductDetails()) {
             if(productDetail.getPrice() < priceMin) {
                 priceMin = productDetail.getPrice();
             }

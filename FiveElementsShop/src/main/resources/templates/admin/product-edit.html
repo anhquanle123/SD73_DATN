@@ -104,7 +104,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>Mã sản phẩm</label>
-                    <input type="text" class="form-control" th:field="*{code}" placeholder="---Mã tự động nếu để trống---" disabled>
+                    <input type="text" class="form-control" th:field="*{code}" placeholder="---Mã tự động nếu để trống---" readonly>
                     <span class="error"></span>
                 </div>
                 <div class="form-group col-md-6">
@@ -147,7 +147,7 @@
                     <label>Trạng thái</label>
                     <span class="red_require"> *</span>
                     <select class="form-select" th:field="*{status}">
-<!--                        <option th:value="0" th:text="'Đang khởi tạo'" ></option>-->
+                        <!--                        <option th:value="0" th:text="'Đang khởi tạo'" ></option>-->
                         <option th:value="1" th:text="'Còn bán'" ></option>
                         <option th:value="2" th:text="'Ngừng bán'" ></option>
                     </select>

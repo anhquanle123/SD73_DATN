@@ -109,4 +109,9 @@ public class ColorServiceIpml implements ColorService {
         Color colorNew = colorRepo.save(color);
         return new ColorDto(colorNew.getId(), colorNew.getCode(), colorNew.getName());
     }
+    @Override
+    public List<Color> findByIds(List<Long> ids) {
+        return colorRepo.findAllById(ids);
+    }
+
 }

@@ -65,7 +65,9 @@
             </div>
             <div class="form-group mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" th:field="*{email}" class="form-control">
+                <input type="email" id="email" th:field="*{email}" class="form-control" required
+                       pattern="[a-zA-Z0-9._%+-]+@gmail\.com$">
+                <div class="invalid-feedback">Vui lòng nhập email hợp lệ .</div>
             </div>
             <div class="form-group mb-3">
                 <label for="phoneNumber" class="form-label">Số điện thoại</label>
@@ -74,7 +76,8 @@
             </div>
             <div class="form-group mb-3">
                 <label for="address" class="form-label">Địa chỉ</label>
-                <input type="text" id="address" th:field="*{address}" class="form-control">
+                <input type="text" id="address" th:field="*{address}" class="form-control" required minlength="5">
+                <div class="invalid-feedback">Vui lòng nhập địa chỉ.</div>
             </div>
             <button type="submit" class="btn btn-primary btn-custom">Lưu</button>
             <a th:href="@{/admin-only/customer-management}" class="btn btn-secondary btn-custom ms-2">Hủy</a>

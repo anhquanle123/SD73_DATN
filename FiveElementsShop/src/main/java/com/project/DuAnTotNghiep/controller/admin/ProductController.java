@@ -1,6 +1,7 @@
 package com.project.DuAnTotNghiep.controller.admin;
 
 import com.project.DuAnTotNghiep.dto.Product.CreateProductDetailsForm;
+import com.project.DuAnTotNghiep.dto.Product.ProductBulkDetailDto;
 import com.project.DuAnTotNghiep.dto.Product.ProductSearchDto;
 import com.project.DuAnTotNghiep.entity.*;
 import com.project.DuAnTotNghiep.exception.NotFoundException;
@@ -138,7 +139,7 @@ public class ProductController {
         CreateProductDetailsForm createProductDetailsForm = new CreateProductDetailsForm();
         List<ProductDetail> productDetails = new ArrayList<>();
         productDetails.add(new ProductDetail());
-            createProductDetailsForm.setProductDetailList(productDetails);
+        createProductDetailsForm.setProductDetailList(productDetails);
         model.addAttribute("form", createProductDetailsForm);
         return "/admin/product-create-detail";
     }
@@ -239,7 +240,7 @@ public class ProductController {
             List<Image> images = new ArrayList<>();
             List<Image> beforeImages = imageService.getAllImagesByProductId(part1Data.getId());
             for (Image image: beforeImages
-                 ) {
+            ) {
                 if(!imageRemoveIds.contains(image.getId())) {
                     images.add(image);
                 }else {
@@ -306,6 +307,43 @@ public class ProductController {
 
         return "redirect:/admin/product-all";
     }
+
+    @PostMapping("/product-detail/bulk-create")
+    @Transactional
+    public String createBulkDetails(@ModelAttribute ProductBulkDetailDto dto,
+                                    RedirectAttributes redirectAttributes) {
+
+        Product product = productService.getProductById(dto.getProductId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+        List<Color> colors = colorService.findByIds(dto.getColorIds());
+        List<Size> sizes = sizeService.findByIds(dto.getSizeIds());
+
+        for (Color c : colors) {
+            for (Size s : sizes) {
+                ProductDetail detail = new ProductDetail();
+                detail.setProduct(product);
+                detail.setColor(c);
+                detail.setSize(s);
+                detail.setQuantity(dto.getQuantity());
+                detail.setPrice(dto.getPrice());
+                detail.setBarcode(generateBarcode());
+
+                productDetailService.save(detail);
+            }
+        }
+
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Đã thêm " + (colors.size() * sizes.size()) + " biến thể sản phẩm");
+        return "redirect:/admin/chi-tiet-san-pham/" + product.getCode();
+    }
+
+    private String generateBarcode() {
+        return String.valueOf(
+                (long)(100000000000L + Math.random() * 900000000000L)
+        );
+    }
+
 
 
 }

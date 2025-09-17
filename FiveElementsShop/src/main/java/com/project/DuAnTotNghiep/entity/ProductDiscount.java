@@ -2,6 +2,7 @@ package com.project.DuAnTotNghiep.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,6 +17,9 @@ public class ProductDiscount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String code;
+    @Nationalized
+    private String name;
     private Double discountedAmount;
     private Date startDate;
     private Date endDate;

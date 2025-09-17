@@ -89,9 +89,12 @@
             <td th:text="${customer.phoneNumber} ?: 'N/A'"></td>
             <td th:text="${customer.email} ?: 'N/A'"></td>
             <td class="gap-2 d-flex">
-                <a th:href="@{/admin-only/customer-management/delete/{id}(id=${customer.id})}"
-                   class="btn btn-danger btn-sm"
-                   onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')">Xóa</a>
+               <a th:href="@{/admin-only/customer-management/delete/{id}(id=${customer.id})}"
+                   class="icon-btn text-danger"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')"
+                   title="Xóa">
+                    <i class="fas fa-trash fa-lg"></i>
+                </a>
                 <!-- Chi tiết -->
                 <a th:href="@{'/admin-only/customer-management/detail/' + ${customer.id}}" class="text-primary icon-btn" title="Chi tiết">
                     <i class="fas fa-users-cog fa-lg"></i>

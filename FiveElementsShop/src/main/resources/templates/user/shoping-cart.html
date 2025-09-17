@@ -441,15 +441,15 @@
                 $("#add-address").show()
                 $("#address-select-group").hide()
             })
-            // $.ajax({
-            //     type: 'GET',
-            //     dataType: "json",
-            //     url: `https://vapi.vnappmob.com/api/province/`,
-            //     success: function (data) {
-            //         province = data.results.map(item => ({ value: item.province_id, label: item.province_name }))
-            //         loadProvinceSelect(data)
-            //     }
-            // })
+            $.ajax({
+                type: 'GET',
+                dataType: "json",
+                url: `https://vapi.vnappmob.com/api/province/`,
+                success: function (data) {
+                    province = data.results.map(item => ({ value: item.province_id, label: item.province_name }))
+                    loadProvinceSelect(data)
+                }
+            })
 
             $("#province").on('change', function () {
                 var provinceId = $(this).val()

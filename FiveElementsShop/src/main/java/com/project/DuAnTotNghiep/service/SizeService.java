@@ -29,4 +29,6 @@ public interface SizeService {
     List<Size> getSizesByProductIdAndColorId(Long productId, Long colorId) throws NotFoundException;
 
     SizeDto createSizeApi(SizeDto sizeDto);
+
+    List<Size> findByIds(List<Long> ids);
 }

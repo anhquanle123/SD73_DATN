@@ -18,6 +18,7 @@ public class ProductDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     private int quantity;
     private double price;
     private String barcode;
